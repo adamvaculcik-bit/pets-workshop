@@ -21,8 +21,7 @@ Bez API klíče web funguje, jen asistent místo odpovědi ukáže kontakt.
 - **Texty webu:** `templates/index.html`
 - **Barvy a vzhled:** `static/style.css` (proměnné nahoře, např. `--accent`)
 - **Co asistent ví a jak odpovídá:** `SYSTEM_PROMPT` v `app.py`
-- **Obrázky:** zatím se načítají z Webnode. Pro trvalé řešení je stáhněte do `static/`
-  a změňte cesty v `index.html`.
+- **Obrázky:** `static/img/` (WebP). Nový obrázek nahrajte sem a odkažte na něj v `index.html`.
 
 ## Nasazení na Render
 
