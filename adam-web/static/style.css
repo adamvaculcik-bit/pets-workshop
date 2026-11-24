@@ -64,7 +64,7 @@ img { max-width: 100%; display: block; }
 .num { font-family: "Space Grotesk", sans-serif; color: var(--accent); font-weight: 700; }
 
 .about { display: grid; grid-template-columns: 360px 1fr; gap: 48px; align-items: center; }
-.about-img { border-radius: var(--radius); aspect-ratio: 4/5; object-fit: cover; width: 100%; }
+.about-img { border-radius: var(--radius); aspect-ratio: 4/5; object-fit: cover; object-position: 33% center; width: 100%; }
 .about p { color: var(--muted); }
 
 .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
