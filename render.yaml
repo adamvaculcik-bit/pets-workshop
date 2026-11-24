@@ -1,0 +1,16 @@
+# Konfigurace pro hosting Render (https://render.com) – nasadí web ze složky adam-web.
+services:
+  - type: web
+    name: adam-vaculcik-web
+    runtime: python
+    plan: free
+    rootDir: adam-web
+    buildCommand: pip install -r requirements.txt
+    # 1 proces s vlákny: streamované odpovědi neblokují ostatní a limit dotazů platí společně
+    startCommand: gunicorn app:app --worker-class gthread --workers 1 --threads 16 --timeout 120
+    healthCheckPath: /
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false   # Render se na klíč zeptá při vytváření; do Gitu se neukládá
+      - key: RATE_LIMIT
+        value: "20"

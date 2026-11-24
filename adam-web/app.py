@@ -2,6 +2,9 @@
 
 import json
 import os
+import threading
+import time
+from collections import defaultdict, deque
 
 import anthropic
 from flask import Flask, Response, jsonify, render_template, request
@@ -45,6 +48,30 @@ mu sestav krátký text poptávky, který může poslat e-mailem.
 
 _client = None
 
+# Jednoduchá ochrana proti zahlcení: max. RATE_LIMIT dotazů na IP za RATE_WINDOW sekund.
+RATE_LIMIT = int(os.environ.get("RATE_LIMIT", 20))
+RATE_WINDOW = 10 * 60
+_hits: dict[str, deque] = defaultdict(deque)
+_hits_lock = threading.Lock()
+
+
+def rate_limited(ip: str) -> bool:
+    now = time.monotonic()
+    with _hits_lock:
+        hits = _hits[ip]
+        while hits and now - hits[0] > RATE_WINDOW:
+            hits.popleft()
+        if len(hits) >= RATE_LIMIT:
+            return True
+        hits.append(now)
+        return False
+
+
+def client_ip() -> str:
+    # Za proxy hostingu (Render apod.) je skutečná IP první v X-Forwarded-For.
+    forwarded = request.headers.get("X-Forwarded-For", "")
+    return forwarded.split(",")[0].strip() or request.remote_addr or "?"
+
 
 def get_client() -> anthropic.Anthropic:
     global _client
@@ -87,6 +114,9 @@ def chat():
     messages = clean_history(payload.get("messages"))
     if not messages:
         return jsonify({"error": "Prázdná zpráva."}), 400
+    if rate_limited(client_ip()):
+        return jsonify({"error": "Příliš mnoho dotazů. Zkuste to prosím za pár minut, "
+                                 "nebo napište Adamovi na adam.vaculcik@gmail.com."}), 429
 
     def generate():
         try:

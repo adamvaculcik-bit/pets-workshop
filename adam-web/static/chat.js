@@ -42,7 +42,10 @@ async function send(text) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages: history }),
     });
-    if (!res.ok || !res.body) throw new Error("HTTP " + res.status);
+    if (!res.ok || !res.body) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || "HTTP " + res.status);
+    }
 
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
@@ -68,7 +71,9 @@ async function send(text) {
     }
   } catch (err) {
     bot.classList.add("error");
-    bot.textContent = "Spojení se nezdařilo. Zkuste to prosím znovu.";
+    bot.textContent = err.message.startsWith("HTTP") || err.name === "TypeError"
+      ? "Spojení se nezdařilo. Zkuste to prosím znovu."
+      : err.message;
   } finally {
     bot.classList.remove("typing");
     sendBtn.disabled = false;

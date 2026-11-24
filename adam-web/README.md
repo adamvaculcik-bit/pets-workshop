@@ -24,8 +24,18 @@ Bez API klíče web funguje, jen asistent místo odpovědi ukáže kontakt.
 - **Obrázky:** zatím se načítají z Webnode. Pro trvalé řešení je stáhněte do `static/`
   a změňte cesty v `index.html`.
 
-## Nasazení
+## Nasazení na Render
 
-Na hostingu s Pythonem (např. Render, Railway, Azure App Service) spusťte
-`gunicorn app:app` a nastavte proměnnou prostředí `ANTHROPIC_API_KEY`.
-Klíč nikdy nedávejte do kódu ani do Gitu.
+Konfigurace je v `render.yaml` v kořeni repozitáře.
+
+1. Přihlaste se na https://render.com přes GitHub.
+2. **New → Blueprint**, vyberte repozitář `pets-workshop` a větev, na které je web.
+3. Render se zeptá na `ANTHROPIC_API_KEY` – vložte klíč z console.anthropic.com.
+4. Klikněte **Deploy**. Web poběží na adrese typu `https://adam-vaculcik-web.onrender.com`.
+
+Vlastní doménu nastavíte v Render → Settings → Custom Domains.
+Na bezplatném tarifu web po 15 minutách nečinnosti usne a první načtení pak trvá
+asi minutu.
+
+Chat má limit 20 dotazů na IP za 10 minut (proměnná `RATE_LIMIT`). V console.anthropic.com
+si navíc nastavte měsíční limit útraty. Klíč nikdy nedávejte do kódu ani do Gitu.
