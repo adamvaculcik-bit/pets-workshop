@@ -14,3 +14,6 @@ services:
         sync: false   # Render se na klíč zeptá při vytváření; do Gitu se neukládá
       - key: RATE_LIMIT
         value: "20"
+      # Hlavní adresa webu pro Google a sdílení, např. https://vaculcik.com (nastavit v Renderu)
+      - key: SITE_URL
+        sync: false

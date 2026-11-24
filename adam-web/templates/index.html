@@ -3,8 +3,80 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Adam Vaculčík – technické zpracování projektů</title>
-  <meta name="description" content="2D výkresy, 3D modely a technické podklady pro pozemní stavitelství. Archicad a AutoCAD. Externí výpomoc na IČO.">
+  <title>Adam Vaculčík – stavební výkresy a 3D modely | Archicad, AutoCAD</title>
+  <meta name="description" content="Technické zpracování stavební dokumentace: 2D výkresy, 3D modely, digitalizace starých výkresů, zakreslení skutečného stavu a výpočty kubatur. Externí výpomoc na IČO pro projektanty a architekty. Zlínský kraj i celá ČR.">
+  <link rel="canonical" href="{{ site_url }}/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Adam Vaculčík">
+  <meta name="theme-color" content="#0f2133">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+
+  <!-- Náhled při sdílení (Facebook, LinkedIn, WhatsApp, X) -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="cs_CZ">
+  <meta property="og:site_name" content="Adam Vaculčík">
+  <meta property="og:url" content="{{ site_url }}/">
+  <meta property="og:title" content="Adam Vaculčík – stavební výkresy a 3D modely">
+  <meta property="og:description" content="2D výkresy, 3D modely a digitalizace výkresů pro pozemní stavitelství. Archicad a AutoCAD, spolupráce na IČO.">
+  <meta property="og:image" content="{{ site_url }}{{ url_for('static', filename='og-image.jpg') }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Adam Vaculčík – technické zpracování projektů">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Strukturovaná data pro Google -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "@id": "{{ site_url }}/#firma",
+    "name": "Adam Vaculčík – technické zpracování projektů",
+    "url": "{{ site_url }}/",
+    "image": "{{ site_url }}{{ url_for('static', filename='og-image.jpg') }}",
+    "logo": "{{ site_url }}{{ url_for('static', filename='apple-touch-icon.png') }}",
+    "description": "Technické zpracování stavební dokumentace, 2D výkresy a 3D modely v oblasti pozemního stavitelství. Archicad a AutoCAD.",
+    "founder": {
+      "@type": "Person",
+      "name": "Adam Vaculčík",
+      "jobTitle": "Stavební technik – kreslič CAD",
+      "image": "{{ site_url }}{{ url_for('static', filename='img/adam.webp') }}"
+    },
+    "telephone": "+420603888122",
+    "email": "adam.vaculcik@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Kateřinice 76",
+      "addressLocality": "Kateřinice",
+      "postalCode": "756 21",
+      "addressRegion": "Zlínský kraj",
+      "addressCountry": "CZ"
+    },
+    "areaServed": [
+      { "@type": "AdministrativeArea", "name": "Zlínský kraj" },
+      { "@type": "Country", "name": "Česká republika" }
+    ],
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "09:00",
+      "closes": "18:00"
+    },
+    "knowsAbout": ["Archicad", "AutoCAD", "Stavební výkresy", "3D modelování staveb", "Digitalizace výkresů", "Zakreslení skutečného stavu", "Výpočet kubatur"],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Služby",
+      "itemListElement": [
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "2D výkresy – půdorysy, řezy, pohledy" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Úpravy a rozkreslování projektové dokumentace" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Digitalizace starších výkresů" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Zakreslení skutečného stavu" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "3D modely staveb" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Výpočty ploch a kubatur" } }
+      ]
+    }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">

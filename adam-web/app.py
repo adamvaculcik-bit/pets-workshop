@@ -8,8 +8,20 @@ from collections import defaultdict, deque
 
 import anthropic
 from flask import Flask, Response, jsonify, render_template, request
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
+# Hosting (Render) běží za proxy – díky tomu Flask zná skutečné https:// a doménu.
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+
+# Hlavní adresa webu pro vyhledávače (např. https://vaculcik.com). Když není nastavená,
+# použije se adresa, na kterou návštěvník přišel.
+SITE_URL = os.environ.get("SITE_URL", "").rstrip("/")
+
+
+@app.context_processor
+def inject_site_url():
+    return {"site_url": SITE_URL or request.url_root.rstrip("/")}
 
 MODEL = "claude-opus-5-5"
 MAX_HISTORY = 20  # max. počet zpráv z historie, které posíláme do API
@@ -106,6 +118,23 @@ def sse(event: dict) -> str:
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/robots.txt")
+def robots():
+    base = SITE_URL or request.url_root.rstrip("/")
+    body = f"User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: {base}/sitemap.xml\n"
+    return Response(body, mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    base = SITE_URL or request.url_root.rstrip("/")
+    body = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            f"  <url><loc>{base}/</loc><changefreq>monthly</changefreq></url>\n"
+            "</urlset>\n")
+    return Response(body, mimetype="application/xml")
 
 
 @app.post("/api/chat")

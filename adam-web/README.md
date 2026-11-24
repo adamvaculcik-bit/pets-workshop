@@ -32,7 +32,18 @@ Konfigurace je v `render.yaml` v kořeni repozitáře.
 3. Render se zeptá na `ANTHROPIC_API_KEY` – vložte klíč z console.anthropic.com.
 4. Klikněte **Deploy**. Web poběží na adrese typu `https://adam-vaculcik-web.onrender.com`.
 
-Vlastní doménu nastavíte v Render → Settings → Custom Domains.
+Vlastní doménu nastavíte v Render → Settings → Custom Domains. Pak v Render →
+Environment nastavte `SITE_URL` na hlavní adresu (např. `https://vaculcik.com`), aby
+Google i náhledy při sdílení používaly vždy tuto doménu.
+
+## Vyhledávače a sdílení
+
+- Strukturovaná data pro Google (firma, adresa, služby, pracovní doba) jsou v `<head>`
+  v `templates/index.html` – při změně kontaktů je upravte i tam.
+- `/robots.txt` a `/sitemap.xml` generuje `app.py`.
+- Obrázek pro sdílení: `static/og-image.jpg` (1200×630). Kontrola náhledu:
+  https://www.opengraph.xyz nebo LinkedIn Post Inspector.
+- Po spuštění domény přidejte web do Google Search Console a odešlete `sitemap.xml`.
 Na bezplatném tarifu web po 15 minutách nečinnosti usne a první načtení pak trvá
 asi minutu.
 
