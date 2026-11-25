@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}{{ s.meta_title }}{% endblock %}
+{% block description %}{{ s.description }}{% endblock %}
+{% block path %}{{ url_for('service', slug=s.slug) }}{% endblock %}
+{% block og_title %}{{ s.title }} – Adam Vaculčík{% endblock %}
+{% block head %}
+  <script type="application/ld+json">
+  {{ structured_data | tojson }}
+  </script>
+{% endblock %}
+
+{% block content %}
+    <section class="hero service-hero">
+      <div class="wrap">
+        <nav class="breadcrumb" aria-label="Drobečková navigace">
+          <a href="{{ url_for('index') }}">Úvod</a> <span>/</span>
+          <a href="{{ url_for('index') }}#sluzby">Služby</a> <span>/</span>
+          <span aria-current="page">{{ s.card }}</span>
+        </nav>
+        <div class="hero-grid">
+          <div>
+            <p class="eyebrow">Služba</p>
+            <h1>{{ s.title }}</h1>
+            <p class="lead">{{ s.lead }}</p>
+            <div class="hero-actions">
+              <a href="#kontakt" class="btn">Poptat zpracování</a>
+              <a href="{{ url_for('index') }}#asistent" class="btn btn-ghost">Zeptat se AI asistenta</a>
+            </div>
+          </div>
+          <figure class="hero-img">
+            <img src="{{ url_for('static', filename=s.image) }}" alt="{{ s.image_alt }}">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap service-cols">
+        <div>
+          <h2>Co pro vás zpracuji</h2>
+          <ul class="checklist">
+            {% for item in s.includes %}<li>{{ item }}</li>{% endfor %}
+          </ul>
+          <p class="outputs"><strong>Výstupy:</strong> {{ s.outputs }}</p>
+        </div>
+        <div class="panel">
+          <h2>Co si připravit</h2>
+          <ul class="checklist">
+            {% for item in s.inputs %}<li>{{ item }}</li>{% endfor %}
+          </ul>
+          <p class="panel-note">Nevíte si rady? Pošlete, co máte – řeknu vám, jestli to stačí.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap">
+        <h2>Jak spolupráce probíhá</h2>
+        <ol class="steps">
+          {% for name, text in s.steps %}
+          <li><span class="num">{{ '%02d' % loop.index }}</span><h3>{{ name }}</h3><p>{{ text }}</p></li>
+          {% endfor %}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap faq-wrap">
+        <h2>Časté otázky</h2>
+        {% for q, a in s.faq %}
+        <details class="faq">
+          <summary>{{ q }}</summary>
+          <p>{{ a }}</p>
+        </details>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap">
+        <h2>Další služby</h2>
+        <div class="cards">
+          {% for o in services if o.slug != s.slug %}
+          <a class="card card-link" href="{{ url_for('service', slug=o.slug) }}">
+            <h3>{{ o.card }}</h3>
+            <p>{{ o.card_text }}</p>
+            <span class="more">Více o službě →</span>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+{% endblock %}

@@ -1,30 +1,8 @@
-<!doctype html>
-<html lang="cs">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Adam Vaculčík – stavební výkresy a 3D modely | Archicad, AutoCAD</title>
-  <meta name="description" content="Technické zpracování stavební dokumentace: 2D výkresy, 3D modely, digitalizace starých výkresů, zakreslení skutečného stavu a výpočty kubatur. Externí výpomoc na IČO pro projektanty a architekty. Zlínský kraj i celá ČR.">
-  <link rel="canonical" href="{{ site_url }}/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="Adam Vaculčík">
-  <meta name="theme-color" content="#0f2133">
-  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
-
-  <!-- Náhled při sdílení (Facebook, LinkedIn, WhatsApp, X) -->
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="cs_CZ">
-  <meta property="og:site_name" content="Adam Vaculčík">
-  <meta property="og:url" content="{{ site_url }}/">
-  <meta property="og:title" content="Adam Vaculčík – stavební výkresy a 3D modely">
-  <meta property="og:description" content="2D výkresy, 3D modely a digitalizace výkresů pro pozemní stavitelství. Archicad a AutoCAD, spolupráce na IČO.">
-  <meta property="og:image" content="{{ site_url }}{{ url_for('static', filename='og-image.jpg') }}">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Adam Vaculčík – technické zpracování projektů">
-  <meta name="twitter:card" content="summary_large_image">
-
+{% extends "base.html" %}
+{% block title %}Adam Vaculčík – stavební výkresy a 3D modely | Archicad, AutoCAD{% endblock %}
+{% block description %}Technické zpracování stavební dokumentace: 2D výkresy, 3D modely, digitalizace starých výkresů, zakreslení skutečného stavu a výpočty kubatur. Externí výpomoc na IČO pro projektanty a architekty. Zlínský kraj i celá ČR.{% endblock %}
+{% block og_title %}Adam Vaculčík – stavební výkresy a 3D modely{% endblock %}
+{% block head %}
   <!-- Strukturovaná data pro Google -->
   <script type="application/ld+json">
   {
@@ -77,35 +55,9 @@
     }
   }
   </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-  <div class="topbar">
-    <div class="wrap topbar-inner">
-      <span>Po–Pá 9:00–18:00</span>
-      <a href="mailto:adam.vaculcik@gmail.com">adam.vaculcik@gmail.com</a>
-      <a href="tel:+420603888122">+420 603 888 122</a>
-    </div>
-  </div>
+{% endblock %}
 
-  <header class="nav">
-    <div class="wrap nav-inner">
-      <a class="logo" href="#uvod"><b>ADAM</b> VACULČÍK</a>
-      <button class="menu-btn" aria-label="Menu" aria-expanded="false">☰</button>
-      <nav class="menu">
-        <a href="#sluzby">Moje služby</a>
-        <a href="#o-mne">O mně</a>
-        <a href="#portfolio">Portfolio</a>
-        <a href="#kontakt">Kontakt</a>
-        <a href="#asistent" class="btn btn-small">AI asistent</a>
-      </nav>
-    </div>
-  </header>
-
-  <main>
+{% block content %}
     <section id="uvod" class="hero">
       <div class="wrap hero-grid">
         <div>
@@ -129,12 +81,14 @@
         <p class="eyebrow">Moje služby</p>
         <h2>S čím vám pomohu</h2>
         <div class="cards">
-          <article class="card"><span class="num">01</span><h3>2D výkresy</h3><p>Půdorysy, řezy, pohledy a kótování podle dodaných podkladů a zadání.</p></article>
-          <article class="card"><span class="num">02</span><h3>Úpravy dokumentace</h3><p>Úpravy a rozkreslování projektové dokumentace pro projektanty a architekty.</p></article>
-          <article class="card"><span class="num">03</span><h3>Digitalizace</h3><p>Převod starších papírových výkresů do digitální podoby a zakreslení skutečného stavu.</p></article>
-          <article class="card"><span class="num">04</span><h3>3D modely</h3><p>3D modely staveb pro vizualizaci, kontrolu návazností a prezentaci.</p></article>
-          <article class="card"><span class="num">05</span><h3>Výpočty</h3><p>Výpočty ploch a kubatur a další technické podklady podle potřeby.</p></article>
-          <article class="card"><span class="num">06</span><h3>Formy spolupráce</h3><p>Jednorázové zpracování části projektu, krátkodobá výpomoc i dlouhodobá spolupráce.</p></article>
+          {% for s in services %}
+          <a class="card card-link" href="{{ url_for('service', slug=s.slug) }}">
+            <span class="num">{{ '%02d' % loop.index }}</span>
+            <h3>{{ s.card }}</h3>
+            <p>{{ s.card_text }}</p>
+            <span class="more">Více o službě →</span>
+          </a>
+          {% endfor %}
         </div>
       </div>
     </section>
@@ -189,23 +143,4 @@
         </div>
       </div>
     </section>
-
-    <section id="kontakt" class="section">
-      <div class="wrap">
-        <p class="eyebrow">Kontakt</p>
-        <h2>Ozvěte se mi</h2>
-        <div class="contact">
-          <div><span>Telefon</span><a href="tel:+420603888122">+420 603 888 122</a></div>
-          <div><span>E-mail</span><a href="mailto:adam.vaculcik@gmail.com">adam.vaculcik@gmail.com</a></div>
-          <div><span>Adresa</span><p>Kateřinice 76, 756 21</p></div>
-          <div><span>Pracovní doba</span><p>Po–Pá 9:00–18:00</p></div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer"><div class="wrap">© 2026 Adam Vaculčík, Kateřinice 76, 756 21</div></footer>
-
-  <script src="{{ url_for('static', filename='chat.js') }}"></script>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Stránka nenalezena | Adam Vaculčík{% endblock %}
+{% block description %}Tato stránka neexistuje.{% endblock %}
+{% block robots %}noindex{% endblock %}
+{% block content %}
+    <section class="section">
+      <div class="wrap">
+        <p class="eyebrow">Chyba 404</p>
+        <h1>Tuhle stránku jsem nenašel</h1>
+        <p class="lead">Možná se změnila adresa. Zkuste úvodní stránku nebo některou ze služeb.</p>
+        <p><a class="btn" href="{{ url_for('index') }}">Zpět na úvod</a></p>
+      </div>
+    </section>
+{% endblock %}
