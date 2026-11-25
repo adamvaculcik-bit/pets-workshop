@@ -7,8 +7,10 @@ import time
 from collections import defaultdict, deque
 
 import anthropic
-from flask import Flask, Response, jsonify, render_template, request
+from flask import Flask, Response, abort, jsonify, render_template, request, url_for
 from werkzeug.middleware.proxy_fix import ProxyFix
+
+from services import SERVICES, SERVICES_BY_SLUG
 
 app = Flask(__name__)
 # Hosting (Render) běží za proxy – díky tomu Flask zná skutečné https:// a doménu.
@@ -19,9 +21,13 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 SITE_URL = os.environ.get("SITE_URL", "").rstrip("/")
 
 
+def base_url() -> str:
+    return SITE_URL or request.url_root.rstrip("/")
+
+
 @app.context_processor
-def inject_site_url():
-    return {"site_url": SITE_URL or request.url_root.rstrip("/")}
+def inject_globals():
+    return {"site_url": base_url(), "services": SERVICES}
 
 MODEL = "claude-opus-5-5"
 MAX_HISTORY = 20  # max. počet zpráv z historie, které posíláme do API
@@ -120,20 +126,63 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/sluzby/<slug>")
+def service(slug):
+    s = SERVICES_BY_SLUG.get(slug)
+    if s is None:
+        abort(404)
+    base = base_url()
+    page = base + url_for("service", slug=slug)
+    structured_data = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Service",
+                "name": s["title"],
+                "description": s["description"],
+                "url": page,
+                "serviceType": s["card"],
+                "provider": {"@id": base + "/#firma"},
+                "areaServed": [{"@type": "AdministrativeArea", "name": "Zlínský kraj"},
+                               {"@type": "Country", "name": "Česká republika"}],
+            },
+            {
+                "@type": "FAQPage",
+                "mainEntity": [{"@type": "Question", "name": q,
+                                "acceptedAnswer": {"@type": "Answer", "text": a}}
+                               for q, a in s["faq"]],
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "Úvod", "item": base + "/"},
+                    {"@type": "ListItem", "position": 2, "name": s["card"], "item": page},
+                ],
+            },
+        ],
+    }
+    return render_template("service.html", s=s, structured_data=structured_data)
+
+
+@app.errorhandler(404)
+def not_found(_):
+    return render_template("404.html"), 404
+
+
 @app.route("/robots.txt")
 def robots():
-    base = SITE_URL or request.url_root.rstrip("/")
-    body = f"User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: {base}/sitemap.xml\n"
+    body = f"User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: {base_url()}/sitemap.xml\n"
     return Response(body, mimetype="text/plain")
 
 
 @app.route("/sitemap.xml")
 def sitemap():
-    base = SITE_URL or request.url_root.rstrip("/")
+    base = base_url()
+    urls = [base + "/"] + [base + url_for("service", slug=s["slug"]) for s in SERVICES]
+    items = "".join(f"  <url><loc>{u}</loc><changefreq>monthly</changefreq></url>\n" for u in urls)
     body = ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-            f"  <url><loc>{base}/</loc><changefreq>monthly</changefreq></url>\n"
-            "</urlset>\n")
+            f"{items}</urlset>\n")
     return Response(body, mimetype="application/xml")
 
 
